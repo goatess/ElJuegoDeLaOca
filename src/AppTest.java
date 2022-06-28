@@ -9,8 +9,8 @@ public class AppTest {
         //act
         App app = new App(); 
         Player player = new Player();
-        String nameReceived = player.getNewName();
-        System.out.println(nameReceived);
+        //String nameReceived = player.getNewName();
+       // System.out.println(nameReceived);
     
 
         //assert
