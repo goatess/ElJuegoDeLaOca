@@ -26,8 +26,8 @@ public class App {
         boolean isFinished = false;
         int finishLine = 63;
         Dice dice = new Dice();
-        int position1 = 1;
-        int position2 = 1;
+        int position1 = 0;
+        int position2 = 0;
         int new_position = 1;
         
         // Dice Roll loop and adding and storing positions
@@ -79,7 +79,7 @@ class Player {
     String newName = "";
     String player1;
     String player2;
-    int position = 1;
+    int position_temp = 1;
 
     String addPlayer(){
         Scanner scanner = new Scanner(System.in);
@@ -99,10 +99,10 @@ class Player {
         this.player2 = player2;
     }
     public void setPosition(int position){
-        this.position = position;
+        this.position_temp = position;
     }
     public int getPosition(){
-        return position;
+        return position_temp;
     }
 }
 
