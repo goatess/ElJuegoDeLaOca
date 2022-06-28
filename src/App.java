@@ -26,7 +26,7 @@ public class App {
         int position2 = 1;
         int new_position = 1;
         
-        // Dice Roll loop and adding
+        // Dice Roll loop and adding and storing positions
         for (isFinished = false; isFinished == false ;){
             
             // Turn loop 
@@ -44,7 +44,7 @@ public class App {
                 new_position = position2;
             }  
 
-            // Checking if player wins or moves, and storing positions
+            // Checking if player wins or moves and moving players
             int d1 = dice.diceRoll();
             dice.setDiceValue1(d1);
             int d2 = dice.diceRoll();
