@@ -93,7 +93,7 @@ class Player {
      public String getPlayer2(){
         return player2;
     }
-    public void setPlayer2(String player1){
+    public void setPlayer2(String player2){
         this.player2 = player2;
     }
     public void setPosition(int position){
