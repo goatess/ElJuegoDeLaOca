@@ -53,4 +53,5 @@ public class AppTest {
         //assert
         assertEquals(expected_movement_sentence, actual_player + " (" + dice.d1 + "," + dice.d2 +") Se mueve hasta la casilla: " + player.getPosition());
     }
+
 }
