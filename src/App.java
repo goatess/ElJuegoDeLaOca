@@ -1,5 +1,4 @@
 import java.util.Scanner;
-import java.math.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -19,12 +18,12 @@ public class App {
         System.out.println("Players: " + player1 + " and " + player2);
         
         // Initialize game basic parameters
+        Dice dice = new Dice();
         String actual_player = "";
         boolean turncheck = false;
         int turn = 1;
         boolean isFinished = false;
         int finishLine = 63;
-        Dice dice = new Dice();
         int position1 = 0;
         int position2 = 0;
         int new_position = 0;
