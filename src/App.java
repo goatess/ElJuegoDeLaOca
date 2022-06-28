@@ -9,6 +9,8 @@ public class App {
         String player1 = player.addPlayer();
         System.out.println("add player 2 : ");
         String player2 = player.addPlayer();
+        
+        //Checks if 2 different players are inserted
         if (player1.equals(player2)){
             System.out.println("Player " + player1 + " already exists, please add player 2 : ");
             player2 = player.addPlayer();

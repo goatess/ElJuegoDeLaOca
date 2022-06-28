@@ -6,7 +6,8 @@ public class AppTest {
     public void checkPlayerNames(){
         //arrange
        // final String FULL_SONG; 
-        //act
+        
+       //act
         App app = new App(); 
         Player player = new Player();
         //String nameReceived = player.getNewName();
