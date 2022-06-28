@@ -11,7 +11,6 @@ public class App {
         System.out.println("add player 2 : ");
         String player2 = player.addPlayer();
         player.setPlayer2(player1);
-
         
         //Checks if 2 different players are inserted
         if (player1.equals(player2)){
@@ -49,7 +48,7 @@ public class App {
                 new_position = position2;
             }  
 
-            // Checking if player wins or moves and moving players
+            // Main loop: Checking if player wins or moves and moving players
             int d1 = dice.diceRoll();
             dice.setDiceValue1(d1);
             int d2 = dice.diceRoll();

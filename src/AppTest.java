@@ -15,10 +15,11 @@ public class AppTest {
 
         //assert
         assertFalse(jugador1 != jugador2);
+    
     }
 
         @Test
-    public void checkAdding(){
+    public void checkMainLoop(){
         //arrange
         App app = new App(); 
         // final String FULL_SONG; 
