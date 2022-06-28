@@ -7,8 +7,11 @@ public class App {
         Player player = new Player();
         System.out.println("Add player 1: ");
         String player1 = player.addPlayer();
+        player.setPlayer1(player1);
         System.out.println("add player 2 : ");
         String player2 = player.addPlayer();
+        player.setPlayer2(player1);
+
         
         //Checks if 2 different players are inserted
         if (player1.equals(player2)){
@@ -17,7 +20,7 @@ public class App {
         }
         System.out.println("Players: " + player1 + " and " + player2);
         
-        // Initialize game 
+        // Initialize game basic parameters
         String actual_player = "";
         boolean turncheck = false;
         int turn = 1;
@@ -34,13 +37,13 @@ public class App {
             // Turn loop 
             if (turn == 1 && turncheck == true){
                 turn = 2;
-                actual_player = player1;
+                actual_player = player2;
                 position2 = player.getPosition();
                 player.setPosition(position2);
                 new_position = position1;
             } else {
                 turn = 1;
-                actual_player = player2;
+                actual_player = player1;
                 position1 = player.getPosition();
                 player.setPosition(position1);
                 new_position = position2;
@@ -75,14 +78,26 @@ public class App {
 
 class Player {
     String newName = "";
+    String player1;
+    String player2;
     int position = 1;
-    int finishLine = 63;
-    Dice dice = new Dice();
-    int totalRoll = dice.getDiceAdding();
+
     String addPlayer(){
         Scanner scanner = new Scanner(System.in);
         newName = scanner.nextLine();
-        return newName;
+        return newName;    
+    }
+    public String getPlayer1(){
+        return player1;
+    }
+    public void setPlayer1(String player1){
+        this.player1 = player1;
+    }
+     public String getPlayer2(){
+        return player2;
+    }
+    public void setPlayer2(String player1){
+        this.player2 = player2;
     }
     public void setPosition(int position){
         this.position = position;
