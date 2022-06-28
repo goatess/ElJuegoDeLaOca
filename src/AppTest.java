@@ -1,5 +1,4 @@
 import static org.junit.Assert.assertEquals; 
-import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 public class AppTest {
@@ -20,7 +19,7 @@ public class AppTest {
     @Test
     public void checkDuplicatePlayerNames(){
         //arrange
-        final String expected_sentence = "Player juan already exists, please add player 2: ";
+        final String expected_name_error_sentence = "Player juan already exists, please add player 2: ";
         //String actual_sentence ="";
         Player player = new Player();
         App app = new App(); 
@@ -33,6 +32,25 @@ public class AppTest {
     
         //assert
         assertEquals(player1,player2);
-        assertEquals(expected_sentence, "Player " + player2 + " already exists, please add player 2: ");
+        assertEquals(expected_name_error_sentence, "Player " + player2 + " already exists, please add player 2: ");
+    }
+
+    @Test
+    public void checkPlayerMovement(){
+
+        //arrange
+        App app = new App(); 
+        Player player = new Player();
+        Dice dice = new Dice();
+        final String expected_movement_sentence = "Juanito (2,3) Se mueve hasta la casilla: 30"; 
+       
+        //act
+        String actual_player = "Juanito";
+        dice.setDiceValue1(2);
+        dice.setDiceValue2(3);
+        player.setPosition(30);
+
+        //assert
+        assertEquals(expected_movement_sentence, actual_player + " (" + dice.d1 + "," + dice.d2 +") Se mueve hasta la casilla: " + player.getPosition());
     }
 }
