@@ -27,6 +27,7 @@ public class App {
         int position1 = 0;
         int position2 = 0;
         int new_position = 0;
+        int puente = 6;
         
         //Main loop
         for (isFinished = false; isFinished == false ;){
@@ -55,16 +56,20 @@ public class App {
             new_position += totalRoll;
     
             if (new_position < finishLine){
-                player.setPosition(new_position);
-                System.out.println( actual_player + " (" + d1 + ", " + d2 + ") Se mueve hasta la casilla: " + player.getPosition());
-                turncheck = true;
-            
+                if (new_position == puente){
+                    player.setPosition(12);
+                    System.out.println( actual_player + " (" + d1 + ", " + d2 + ") De puente a puente, se mueve donde le lleva la corriente, hasta la casilla: " + player.getPosition());
+                    turncheck = true;
+                }else {
+                    player.setPosition(new_position);
+                    System.out.println( actual_player + " (" + d1 + ", " + d2 + ") Se mueve hasta la casilla: " + player.getPosition());
+                    turncheck = true;
+                }
             }else if (new_position > finishLine) {
                 new_position = finishLine - (new_position - finishLine);
                 player.setPosition(new_position);
                 System.out.println( actual_player + " (" + d1 + ", " + d2 + ") Se mueve hasta la casilla: " + player.getPosition());
                 turncheck = true;
-            
             }else {
                 System.out.println(actual_player + "(" + d1 + ", " + d2 + ") Casilla 63! " + actual_player + " WINS!");
                 isFinished = true;
