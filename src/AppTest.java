@@ -1,33 +1,31 @@
 import static org.junit.Assert.assertEquals; 
+import static org.junit.Assert.assertFalse;
 import org.junit.Test;
 
 public class AppTest {
     @Test
     public void checkPlayerNames(){
         //arrange
-       // final String FULL_SONG; 
-        
-       //act
         App app = new App(); 
         Player player = new Player();
-        //String nameReceived = player.getNewName();
-       // System.out.println(nameReceived);
-    
+ 
+       //act
+        String jugador1 = player.getPlayer1();
+        String jugador2 = player.getPlayer2();
 
         //assert
-        //assertEquals(FULL_SONG, app.getSong());
+        assertFalse(jugador1 != jugador2);
     }
 
         @Test
-    public void checkWinning(){
+    public void checkAdding(){
         //arrange
-       // final String FULL_SONG; 
-        //act
         App app = new App(); 
+        // final String FULL_SONG; 
+        //act
         //Player player = new Player();
     
         //assert
-       // assertEquals(app.actualPosition, 63);
-    
+        // assertEquals(app.actualPosition, 63);
 }
 }
