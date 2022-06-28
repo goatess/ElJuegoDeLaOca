@@ -20,8 +20,7 @@ public class App {
         // Initialize game basic parameters
         Dice dice = new Dice();
         String actual_player = "";
-        boolean turncheck = false;
-        int turn = 1;
+        int turn = 2;
         boolean isFinished = false;
         int finishLine = 63;
         int position1 = 0;
@@ -29,47 +28,43 @@ public class App {
         int new_position = 0;
         int puente = 6;
         
-        //Main loop
-        for (isFinished = false; isFinished == false ;){
+        //Main loop until game finishes
+        for (isFinished = false; isFinished == false;){
             
-            // Turn loop 
-            if (turn == 1 && turncheck == true){
+            // Turn loop : player iteration and storing variables before next move
+            if (turn == 1){
                 turn = 2;
                 actual_player = player2;
                 position2 = player.getPosition();
-                player.setPosition(position2);
                 new_position = position1;
             } else {
                 turn = 1;
                 actual_player = player1;
                 position1 = player.getPosition();
-                player.setPosition(position1);
                 new_position = position2;
             }  
 
-            // Moving players
+            // Rolling dices
             int d1 = dice.diceRoll();
             dice.setDiceValue1(d1);
             int d2 = dice.diceRoll();
             dice.setDiceValue2(d2);
             int totalRoll = dice.getDiceAdding();            
             new_position += totalRoll;
-    
+
+            // Moving players
             if (new_position < finishLine){
                 if (new_position == puente){
                     player.setPosition(new_position + puente);
                     System.out.println( actual_player + " (" + d1 + ", " + d2 + ") De puente a puente, se mueve donde le lleva la corriente, hasta la casilla: " + player.getPosition());
-                    turncheck = true;
                 }else {
                     player.setPosition(new_position);
                     System.out.println( actual_player + " (" + d1 + ", " + d2 + ") Se mueve hasta la casilla: " + player.getPosition());
-                    turncheck = true;
                 }
             }else if (new_position > finishLine) {
                 new_position = finishLine - (new_position - finishLine);
                 player.setPosition(new_position);
                 System.out.println( actual_player + " (" + d1 + ", " + d2 + ") Se mueve hasta la casilla: " + player.getPosition());
-                turncheck = true;
             }else {
                 System.out.println(actual_player + "(" + d1 + ", " + d2 + ") Casilla 63! " + actual_player + " WINS!");
                 isFinished = true;
