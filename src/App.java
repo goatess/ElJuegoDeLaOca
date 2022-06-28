@@ -57,7 +57,7 @@ public class App {
     
             if (new_position < finishLine){
                 if (new_position == puente){
-                    player.setPosition(12);
+                    player.setPosition(new_position + puente);
                     System.out.println( actual_player + " (" + d1 + ", " + d2 + ") De puente a puente, se mueve donde le lleva la corriente, hasta la casilla: " + player.getPosition());
                     turncheck = true;
                 }else {
