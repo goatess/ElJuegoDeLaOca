@@ -6,27 +6,29 @@ public class AppTest {
     @Test
     public void checkPlayerNames(){
         //arrange
+        String expected_player_name = "Juanito";
         App app = new App(); 
         Player player = new Player();
- 
-       //act
-        String jugador1 = player.getPlayer1();
-        String jugador2 = player.getPlayer2();
+        
+        //act
+        player.setPlayer1("Juanito");
 
         //assert
-        assertFalse(jugador1 != jugador2);
-    
+        assertEquals(expected_player_name , player.getPlayer1());
     }
 
         @Test
     public void checkMainLoop(){
         //arrange
+        String expected_sentence = "Player juan already exists, please add player 2 :";
+        Player player = new Player();
         App app = new App(); 
-        // final String FULL_SONG; 
+        
         //act
-        //Player player = new Player();
+        player.setPlayer1("juan");
+        player.setPlayer2("juan");
     
         //assert
-        // assertEquals(app.actualPosition, 63);
-}
+        assertEquals(expected_sentence, "Player juan already exists, please add player 2 :");
+    }
 }

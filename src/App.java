@@ -7,10 +7,9 @@ public class App {
         Player player = new Player();
         System.out.println("Add player 1: ");
         String player1 = player.addPlayer();
-        player.setPlayer1(player1);
         System.out.println("add player 2 : ");
         String player2 = player.addPlayer();
-        player.setPlayer2(player1);
+
         
         //Checks if 2 different players are inserted
         if (player1.equals(player2)){
@@ -28,9 +27,9 @@ public class App {
         Dice dice = new Dice();
         int position1 = 0;
         int position2 = 0;
-        int new_position = 1;
+        int new_position = 0;
         
-        // Dice Roll loop and adding and storing positions
+        //Main loop
         for (isFinished = false; isFinished == false ;){
             
             // Turn loop 
@@ -48,7 +47,7 @@ public class App {
                 new_position = position2;
             }  
 
-            // Main loop: Checking if player wins or moves and moving players
+            // Moving players
             int d1 = dice.diceRoll();
             dice.setDiceValue1(d1);
             int d2 = dice.diceRoll();
@@ -79,7 +78,7 @@ class Player {
     String newName = "";
     String player1;
     String player2;
-    int position_temp = 1;
+    int position_temp = 0;
 
     String addPlayer(){
         Scanner scanner = new Scanner(System.in);
