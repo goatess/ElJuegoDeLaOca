@@ -19,7 +19,6 @@ public class App {
         String player1 = player.addPlayer();
         System.out.println("add player 2 : ");
         String player2 = player.addPlayer();
-
         //Checks if 2 different players are inserted
         if (player1.equals(player2)){
             System.out.println("Player " + player1 + " already exists, please add player 2 : ");
@@ -27,15 +26,14 @@ public class App {
         }
         System.out.println("Players: " + player1 + " and " + player2);
         
-        //Main loop until game finishes
-        for (isFinished = false; isFinished == false;){
-            
+        //Main infinite loop until game finishes
+        for (isFinished = false; isFinished == false;){            
             // Turn loop : player iteration and storing variables before next move
             if (turn == 1){
                 actual_player = player2;
                 //guardo la posicion del otro jugador antes de perderla
                 position2 = player.getPosition();
-                //llamo a la posicion de este
+                //llamo a la posicion de este jugador para usarla en el siguiente loop
                 new_position = position1;
                 //cambio el turno para la proxima vez que llegue aqui el proceso
                 turn = 2;
@@ -53,23 +51,23 @@ public class App {
             dice.setDiceValue1(d1);
             int d2 = dice.diceRoll();
             dice.setDiceValue2(d2);            
-            new_position += dice.getDiceAdding();
+            new_position += dice.getTotalRoll();
 
-            // Moving players
+            // Moving players loop
             if (new_position < finishLine){
                 if (new_position == puente){
                     player.setPosition(new_position + puente);
-                    System.out.println(actual_player + " (" + d1 + ", " + d2 + ") De puente a puente, se mueve donde le lleva la corriente, hasta la casilla: " + player.getPosition());
+                    System.out.println(actual_player + " (" + d1 + ", " + d2 + ") moves to the bridge and jumps to: " + player.getPosition());
                 }else {
                     player.setPosition(new_position);
-                    System.out.println(actual_player + " (" + d1 + ", " + d2 + ") Se mueve hasta la casilla: " + player.getPosition());
+                    System.out.println(actual_player + " (" + d1 + ", " + d2 + ") moves to: " + player.getPosition());
                 }
             }else if (new_position > finishLine) {
                 new_position = finishLine - (new_position - finishLine);
                 player.setPosition(new_position);
-                System.out.println(actual_player + " (" + d1 + ", " + d2 + ") ¡REBOTE! Se mueve hasta la casilla: " + player.getPosition());
+                System.out.println(actual_player + " (" + d1 + ", " + d2 + ") ¡BOUNCE! Moves to: " + player.getPosition());
             }else {
-                System.out.println(actual_player + "(" + d1 + ", " + d2 + ") Casilla 63! " + actual_player + " WINS!");
+                System.out.println(actual_player + "(" + d1 + ", " + d2 + ") moves to box number 63! " + actual_player + " WINS!");
                 isFinished = true;
             }
         }         
@@ -77,8 +75,7 @@ public class App {
 }
     class Player {
     String newName = "";
-    String player1;
-    String player2;
+    String player;
     int position_temp = 0;
 
     String addPlayer(){
@@ -86,17 +83,11 @@ public class App {
         newName = scanner.nextLine();
         return newName;    
     }
-    public String getPlayer1(){
-        return player1;
+    public String getPlayer(){
+        return player;
     }
-    public void setPlayer1(String player1){
-        this.player1 = player1;
-    }
-     public String getPlayer2(){
-        return player2;
-    }
-    public void setPlayer2(String player2){
-        this.player2 = player2;
+    public void setPlayer(String player){
+        this.player = player;
     }
     public void setPosition(int position){
         this.position_temp = position;
@@ -122,7 +113,7 @@ class Dice {
     public void setDiceValue2(int d2){
         this.d2 = d2;
     }
-    public int getDiceAdding(){
+    public int getTotalRoll(){
         int diceAdding = d1 + d2;
         return diceAdding;
     }

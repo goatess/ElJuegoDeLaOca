@@ -10,29 +10,24 @@ public class AppTest {
         Player player = new Player();
         
         //act
-        player.setPlayer1("Juanito");
+        player.setPlayer("Juanito");
 
         //assert
-        assertEquals(expected_player_name , player.getPlayer1());
+        assertEquals(expected_player_name , player.getPlayer());
     }
 
     @Test
     public void checkDuplicatePlayerNames(){
         //arrange
         final String expected_name_error_sentence = "Player juan already exists, please add player 2: ";
-        //String actual_sentence ="";
         Player player = new Player();
         App app = new App(); 
         
         //act
-        player.setPlayer1("juan");
-        player.setPlayer2("juan");
-        String player1 = player.getPlayer1();
-        String player2 = player.getPlayer2();
+        player.newName = "juan";
     
         //assert
-        assertEquals(player1,player2);
-        assertEquals(expected_name_error_sentence, "Player " + player2 + " already exists, please add player 2: ");
+        assertEquals(expected_name_error_sentence, "Player " + player.newName + " already exists, please add player 2: ");
     }
 
     @Test
