@@ -10,10 +10,11 @@ public class App {
 
 class Game {
     final String FINAL_MOVE = "Wins!!";
+    String storedMessage = "";
+
     Players player = new Players();
     GameBoard gameBoard = new GameBoard();
     Dice dice = new Dice();
-    String storedMessage = "";
 
     void startGame() {
         player.addPlayer("add player Sara");
@@ -59,7 +60,7 @@ class Game {
 
     String turn() {
         String message = "";
-        do {        // para que entre en bucle
+        do { // para que entre en bucle
             for (String player : player.playerList) { // para iterar a los jugadores
                 if (!message.contains(FINAL_MOVE)) { // para hacer que compruebe la condicion (que el juego sigue)
                     int dice1 = dice.rollDice();
@@ -67,7 +68,7 @@ class Game {
                     int tirada = dice1 + dice2;
                     int currentIndex = getIndex(player);
                     message = "Player NOMBRE rolls " + dice1 + "," + dice2 + ". ";
-                    message += "NOMBRE" + gameBoard.manageBoxes(currentIndex, tirada);
+                    message += gameBoard.manageBoxes(currentIndex, tirada);
                     message = message.replaceAll("NOMBRE", getPlayer(currentIndex));
                     System.out.println(message);
                 } else
@@ -91,7 +92,7 @@ class Game {
 
     public void setPosition(int index, int position) {
         if (index >= gameBoard.positionsList.size()) {
-            gameBoard.positionsList.add(0);   
+            gameBoard.positionsList.add(0);
         }
         gameBoard.positionsList.set(index, position);
     }
@@ -133,37 +134,37 @@ class Players {
 }
 
 class GameBoard {
+    final int END_POSITION = 63;
+    final int BRIDGE_POSITION = 6;
     List<Integer> positionsList = new ArrayList<Integer>();
-    int endPosition = 63;
-    int bridgePosition = 6;
 
     Dice dice = new Dice();
 
     String manageBoxes(int index, int tirada) {
         if (index >= positionsList.size()) {
-            positionsList.add(0);   
+            positionsList.add(0);
         }
+        
         String message = "";
         int oldPosition = positionsList.get(index);
         int position = tirada + oldPosition;
-        if (position <= endPosition) {
-            message = " moves from " + oldPosition;
-            if (position == bridgePosition) {
-                positionsList.set(index, 12);
-                message += " to The Bridge. NOMBRE jumps";
-            } else {
-                positionsList.set(index, position);
-            }
-            message += " to " + positionsList.get(index);
-            if (position == 63) {
-                positionsList.set(index, 63);
-                message += " NOMBRE Wins!!";
-            }
-        } else {
-            position = endPosition - (position - endPosition);
+
+        message = "NOMBRE moves from " + oldPosition;
+        if (position == BRIDGE_POSITION) {
+            positionsList.set(index, 12);
+            message += " to The Bridge. NOMBRE jumps";
+        } 
+        positionsList.set(index, position);
+        message += " to " + positionsList.get(index);
+        if (position > END_POSITION) {
+            position = END_POSITION - (position - END_POSITION);
             positionsList.set(index, position);
-            message = " bounces! Returns to " + positionsList.get(index);
+            message += ". NOMBRE bounces! NOMBRE Returns to " + positionsList.get(index);
+        } else if (position == END_POSITION) {
+            positionsList.set(index, END_POSITION);
+            message += ". NOMBRE Wins!!";
         }
+
         return message;
     }
 }
