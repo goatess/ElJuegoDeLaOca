@@ -7,7 +7,7 @@ public class AppTest {
 
         // arrange
         final String expectedPlayer = "Sara";
-        NewGame newGame = new NewGame();
+        Game newGame = new Game();
 
         // act
         newGame.player.addPlayer("add player Sara");
@@ -23,7 +23,7 @@ public class AppTest {
 
         // arrange
         final int expectedSize = 2;
-        NewGame newGame = new NewGame();
+        Game newGame = new Game();
 
         // act
         newGame.player.addPlayer("add player Sara");
@@ -34,29 +34,17 @@ public class AppTest {
         // assert
         assertEquals(expectedSize, actualSize);
     }
+
+
     // message error
 
-    @Test
-    public void initial_positions_are_set_up() {
-
-        // arrange
-        final int expectedPosition = 0;
-        NewGame newGame = new NewGame();
-
-        // act
-        newGame.player.addPlayer("add player Sara");
-        int actualPosition = newGame.getPosition(0);
-
-        // assert
-        assertEquals(expectedPosition, actualPosition);
-    }
 
     @Test
     public void positions_are_overwritten() {
 
         // arrange
         final int expectedPosition = 6;
-        NewGame newGame = new NewGame();
+        Game newGame = new Game();
 
         // act
         newGame.player.addPlayer("add player Sara");
@@ -72,11 +60,11 @@ public class AppTest {
 
         // arrange
         final int expectedPosition = 8;
-        NewGame newGame = new NewGame();
+        Game newGame = new Game();
 
         // act
         newGame.player.addPlayer("add player Sara");
-        newGame.gameBoard.makeAMove(0, 8);
+        newGame.gameBoard.manageBoxes(0, 8);
         int actualPosition = newGame.getPosition(0);
 
         // assert
@@ -84,16 +72,16 @@ public class AppTest {
     }
 
     @Test
-    public void move_players_with_command() {
+    public void move_players_manually_with_command() {
 
         // arrange
         final int expectedPosition = 7;
-        NewGame newGame = new NewGame();
+        Game newGame = new Game();
 
         // act
         newGame.player.addPlayer("add player Sara");
 
-        newGame.commandRoll("move Sara 4, 3");
+        newGame.manualRoll("move Sara 4, 3");
         int actualPosition = newGame.getPosition(0);
 
         // assert
@@ -101,16 +89,16 @@ public class AppTest {
     }
 
     @Test
-    public void moves_and_bounces() {
+    public void moves_past_final_position_and_bounces() {
 
         // arrange
         final int expectedPosition = 60;
-        NewGame newGame = new NewGame();
+        Game newGame = new Game();
 
         // act
         newGame.player.addPlayer("add player Sara");
         newGame.setPosition(0, 58);
-        newGame.commandRoll("move Sara 6, 2");
+        newGame.manualRoll("move Sara 6, 2");
         int actualPosition = newGame.getPosition(0);
 
         // assert
@@ -118,16 +106,16 @@ public class AppTest {
     }
 
     @Test
-    public void moves_to_bridge() {
+    public void moves_to_bridge_and() {
 
         // arrange
         final int expectedPosition = 12;
-        NewGame newGame = new NewGame();
+        Game game = new Game();
 
         // act
-        newGame.player.addPlayer("add player Sara");
-        newGame.commandRoll("move Sara 4, 2");
-        int actualPosition = newGame.getPosition(0);
+        game.player.addPlayer("add player Sara");
+        game.manualRoll("move Sara 4, 2");
+        int actualPosition = game.getPosition(0);
 
         // assert
         assertEquals(expectedPosition, actualPosition);
@@ -137,12 +125,12 @@ public class AppTest {
     public void dice_roll() {
 
         // arrange
-        NewGame newGame = new NewGame();
+        Game game = new Game();
 
         // act
-        newGame.player.addPlayer("add player Sara");
-        newGame.diceRoll("move Sara");
-        int actualPosition = newGame.getPosition(0);
+        game.player.addPlayer("add player Sara");
+        game.diceRoll("move Sara");
+        int actualPosition = game.getPosition(0);
         boolean actualBool = actualPosition > 0;
 
         // assert

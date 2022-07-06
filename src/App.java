@@ -3,72 +3,77 @@ import java.util.List;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        NewGame newGame = new NewGame();
+        Game newGame = new Game();
         newGame.startGame();
     }
 }
 
-class NewGame {
-    Player player = new Player();
+class Game {
+    final String FINAL_MOVE = "Wins!!";
+    Players player = new Players();
     GameBoard gameBoard = new GameBoard();
+    Dice dice = new Dice();
     String storedMessage = "";
 
     void startGame() {
+        player.addPlayer("add player Sara");
+        player.addPlayer("add player Juan");
+        player.addPlayer("add player Pepito");
+        turn();
     }
 
-    void commandRoll(String command) {
-        String finalmove = "Wins!!";
-        if (!storedMessage.contains(finalmove)) {
+    void manualRoll(String command) {
+        if (!storedMessage.contains(FINAL_MOVE)) {
             String numbersOnly = command.replaceAll("[^0-9]", "");
             String number1 = numbersOnly.substring(0, 1);
             String number2 = numbersOnly.substring(1);
             int dice1 = Integer.parseInt(number1);
             int dice2 = Integer.parseInt(number2);
-            manualMove(dice1, dice2, command);
+            commandMove(dice1, dice2, command);
         }
     }
 
     void diceRoll(String command) {
-        int dice1 = gameBoard.dice.rollDice();
-        int dice2 = gameBoard.dice.rollDice();
-        manualMove(dice1, dice2, command);
+        int dice1 = dice.rollDice();
+        int dice2 = dice.rollDice();
+        commandMove(dice1, dice2, command);
     }
 
-    String manualMove(int dice1, int dice2, String command) {
-        final String finalmove = "Wins!!";
+    String commandMove(int dice1, int dice2, String command) {
         String message = "";
         int tirada = dice1 + dice2;
-        if (!storedMessage.contains(finalmove)) {
+        if (!storedMessage.contains(FINAL_MOVE)) {
             command = command.replaceAll("[\\.\\,\\(\\)0-9]", "");
             command = command.replaceFirst("move ", "");
             String name = command.replaceAll(" ", "");
             int currentIndex = getIndex(name);
 
-            message = "COMM Player " + name + " rolls " + dice1 + "," + dice2 + ". ";
-            message += getPlayer(currentIndex) + gameBoard.makeAMove(currentIndex, tirada);
+            message = "Player NOMBRE rolls " + dice1 + "," + dice2 + ". ";
+            message += "NOMBRE" + gameBoard.manageBoxes(currentIndex, tirada);
+            message = message.replaceAll("NOMBRE", getPlayer(currentIndex));
             storedMessage = message;
             System.out.println(message);
         }
         return message;
     }
 
-    String autoMove() {
-        String finalmove = "Wins!!";
+    String turn() {
         String message = "";
-        while (!message.contains(finalmove)) { // para que entre en bucle
+        do {        // para que entre en bucle
             for (String player : player.playerList) { // para iterar a los jugadores
-                if (!message.contains(finalmove)) { // para hacer que compruebe la condicion (que el juego sigue)
-                    int dice1 = gameBoard.dice.rollDice();
-                    int dice2 = gameBoard.dice.rollDice();
+                if (!message.contains(FINAL_MOVE)) { // para hacer que compruebe la condicion (que el juego sigue)
+                    int dice1 = dice.rollDice();
+                    int dice2 = dice.rollDice();
                     int tirada = dice1 + dice2;
                     int currentIndex = getIndex(player);
-                    message = "TURN Player " + getPlayer(currentIndex) + " rolls " + dice1 + "," + dice2 + ". ";
-                    message += getPlayer(currentIndex) + gameBoard.makeAMove(currentIndex, tirada);
+                    message = "Player NOMBRE rolls " + dice1 + "," + dice2 + ". ";
+                    message += "NOMBRE" + gameBoard.manageBoxes(currentIndex, tirada);
+                    message = message.replaceAll("NOMBRE", getPlayer(currentIndex));
                     System.out.println(message);
                 } else
                     break; // para salir completamente del bucle cuando acaba el juego
             }
-        }
+        } while (!message.contains(FINAL_MOVE));
         return message;
     }
 
@@ -81,11 +86,14 @@ class NewGame {
     }
 
     public int getPosition(int index) {
-        return gameBoard.positions[index];
+        return gameBoard.positionsList.get(index);
     }
 
     public void setPosition(int index, int position) {
-        gameBoard.positions[index] = position;
+        if (index >= gameBoard.positionsList.size()) {
+            gameBoard.positionsList.add(0);   
+        }
+        gameBoard.positionsList.set(index, position);
     }
 
 }
@@ -100,7 +108,7 @@ class Dice {
     }
 }
 
-class Player {
+class Players {
     List<String> playerList = new ArrayList<String>();
 
     String addPlayer(String command) {
@@ -125,32 +133,36 @@ class Player {
 }
 
 class GameBoard {
-    public int[] positions = new int[12];
+    List<Integer> positionsList = new ArrayList<Integer>();
     int endPosition = 63;
     int bridgePosition = 6;
 
     Dice dice = new Dice();
 
-    String makeAMove(int index, int tirada) {
+    String manageBoxes(int index, int tirada) {
+        if (index >= positionsList.size()) {
+            positionsList.add(0);   
+        }
         String message = "";
-        int oldPosition = positions[index];
-        int position = tirada + positions[index];
+        int oldPosition = positionsList.get(index);
+        int position = tirada + oldPosition;
         if (position <= endPosition) {
             message = " moves from " + oldPosition;
             if (position == bridgePosition) {
-                positions[index] = 12;
-                message += " to The Bridge. NOMBRE Jumps";
+                positionsList.set(index, 12);
+                message += " to The Bridge. NOMBRE jumps";
             } else {
-                positions[index] = position;
+                positionsList.set(index, position);
             }
-            message += " to " + positions[index];
+            message += " to " + positionsList.get(index);
             if (position == 63) {
+                positionsList.set(index, 63);
                 message += " NOMBRE Wins!!";
             }
         } else {
             position = endPosition - (position - endPosition);
-            positions[index] = position;
-            message = " bounces! Returns to " + positions[index];
+            positionsList.set(index, position);
+            message = " bounces! Returns to " + positionsList.get(index);
         }
         return message;
     }
