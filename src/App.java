@@ -23,15 +23,17 @@ class Game {
         turn();
     }
 
-    void manualRoll(String command) {
+    String manualRoll(String command) {
+        String message = "";
         if (!storedMessage.contains(FINAL_MOVE)) {
             String numbersOnly = command.replaceAll("[^0-9]", "");
             String number1 = numbersOnly.substring(0, 1);
             String number2 = numbersOnly.substring(1);
             int dice1 = Integer.parseInt(number1);
             int dice2 = Integer.parseInt(number2);
-            commandMove(dice1, dice2, command);
+            message = commandMove(dice1, dice2, command);
         }
+        return message;
     }
 
     void diceRoll(String command) {
@@ -50,7 +52,7 @@ class Game {
             int currentIndex = getIndex(name);
 
             message = "Player NOMBRE rolls " + dice1 + "," + dice2 + ". ";
-            message += "NOMBRE" + gameBoard.manageBoxes(currentIndex, tirada);
+            message += gameBoard.manageBoxes(currentIndex, tirada);
             message = message.replaceAll("NOMBRE", getPlayer(currentIndex));
             storedMessage = message;
             System.out.println(message);
@@ -96,15 +98,14 @@ class Game {
         }
         gameBoard.positionsList.set(index, position);
     }
-
 }
 
 class Dice {
-    int min = 1;
-    int max = 6;
+    final int MIN = 1;
+    final int MAX = 6;
 
     int rollDice() {
-        int oneDice = (int) Math.floor(Math.random() * (max - min + 1) + min);
+        int oneDice = (int) Math.floor(Math.random() * (MAX - MIN + 1) + MIN);
         return oneDice;
     }
 }
@@ -116,8 +117,11 @@ class Players {
         String name = command.replaceAll("[\\.\\,\\(\\)] ", "");
         name = command.replaceAll("add player ", "");
         String message = "";
+        if (name == "NOMBRE") {
+            message = "forbidden name NOMBRE";
+        }
         if (playerList.contains(name)) {
-            message = "Player: " + name + " already exists. Please insert a new player.";
+            message = "Player " + name + " already exists. Please insert a new player.";
         } else {
             playerList.add(name);
             message = "Players: ";
@@ -144,27 +148,34 @@ class GameBoard {
         if (index >= positionsList.size()) {
             positionsList.add(0);
         }
-        
+
         String message = "";
         int oldPosition = positionsList.get(index);
         int position = tirada + oldPosition;
 
-        message = "NOMBRE moves from " + oldPosition;
+        message = "NOMBRE moves from ";
+        if (oldPosition == 0) {
+            message += "Start";
+        } else
+            message += oldPosition;
+        positionsList.set(index, position);
         if (position == BRIDGE_POSITION) {
             positionsList.set(index, 12);
             message += " to The Bridge. NOMBRE jumps";
-        } 
-        positionsList.set(index, position);
-        message += " to " + positionsList.get(index);
+        }
+        message += " to ";
+
         if (position > END_POSITION) {
+            message += END_POSITION;
             position = END_POSITION - (position - END_POSITION);
             positionsList.set(index, position);
             message += ". NOMBRE bounces! NOMBRE Returns to " + positionsList.get(index);
-        } else if (position == END_POSITION) {
+        } else
+            message += positionsList.get(index);
+        if (position == END_POSITION) {
             positionsList.set(index, END_POSITION);
             message += ". NOMBRE Wins!!";
         }
-
         return message;
     }
 }
