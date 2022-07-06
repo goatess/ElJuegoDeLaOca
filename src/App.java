@@ -1,128 +1,157 @@
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        // Initialize game basic parameters
-        String actual_player = "";
-        int turn = 2;
-        boolean isFinished = false;
-        int finishLine = 63;
-        int puente = 6;
-        int new_position = 0;
-        int position1 = 0;
-        int position2 = 0;
-        // Add players and create dice
-        Dice dice = new Dice();
-        Roll roll = new Roll();
-        Player player = new Player();
-        System.out.println("Add player 1: ");
-        String player1 = player.addPlayer();
-        System.out.println("add player 2 : ");
-        String player2 = player.addPlayer();
-        //Checks if 2 different players are inserted
-        if (player1.equals(player2)){
-            System.out.println("Player " + player1 + " already exists, please add player 2 : ");
-            player2 = player.addPlayer();
+        NewGame newGame = new NewGame();
+        newGame.startGame();
+    }
+}
+
+class NewGame {
+    Player player = new Player();
+    GameBoard gameBoard = new GameBoard();
+    String storedMessage = "";
+
+    void startGame() {
+    }
+
+    void commandRoll(String command) {
+        String finalmove = "Wins!!";
+        if (!storedMessage.contains(finalmove)) {
+            String numbersOnly = command.replaceAll("[^0-9]", "");
+            String number1 = numbersOnly.substring(0, 1);
+            String number2 = numbersOnly.substring(1);
+            int dice1 = Integer.parseInt(number1);
+            int dice2 = Integer.parseInt(number2);
+            manualMove(dice1, dice2, command);
         }
-        System.out.println("Players: " + player1 + " and " + player2);
-        
-        //Main infinite loop until game finishes
-        for (isFinished = false; isFinished == false;){            
-            // Turn loop : player iteration and storing variables before next move
-            if (turn == 1){
-                actual_player = player2;
-                //guardo la posicion del otro jugador antes de perderla
-                position2 = player.getPosition();
-                //llamo a la posicion de este jugador para usarla en el siguiente loop
-                new_position = position1;
-                //cambio el turno para la proxima vez que llegue aqui el proceso
-                turn = 2;
-            } 
-            else {
-                actual_player = player1;
-                position1 = player.getPosition();
-                new_position = position2;
-                turn = 1;
-            }  
+    }
 
-            // Rolling dices
-            roll.pressEnterKeyToContinue();
-            int d1 = dice.diceRoll();
-            dice.setDiceValue1(d1);
-            int d2 = dice.diceRoll();
-            dice.setDiceValue2(d2);            
-            new_position += dice.getTotalRoll();
+    void diceRoll(String command) {
+        int dice1 = gameBoard.dice.rollDice();
+        int dice2 = gameBoard.dice.rollDice();
+        manualMove(dice1, dice2, command);
+    }
 
-            // Moving players loop
-            if (new_position < finishLine){
-                if (new_position == puente){
-                    player.setPosition(new_position + puente);
-                    System.out.println(actual_player + " (" + d1 + ", " + d2 + ") moves to the bridge and jumps to: " + player.getPosition());
-                }else {
-                    player.setPosition(new_position);
-                    System.out.println(actual_player + " (" + d1 + ", " + d2 + ") moves to: " + player.getPosition());
-                }
-            }else if (new_position > finishLine) {
-                new_position = finishLine - (new_position - finishLine);
-                player.setPosition(new_position);
-                System.out.println(actual_player + " (" + d1 + ", " + d2 + ") ¡BOUNCE! Moves to: " + player.getPosition());
-            }else {
-                System.out.println(actual_player + "(" + d1 + ", " + d2 + ") moves to box number 63! " + actual_player + " WINS!");
-                isFinished = true;
+    String manualMove(int dice1, int dice2, String command) {
+        final String finalmove = "Wins!!";
+        String message = "";
+        int tirada = dice1 + dice2;
+        if (!storedMessage.contains(finalmove)) {
+            command = command.replaceAll("[\\.\\,\\(\\)0-9]", "");
+            command = command.replaceFirst("move ", "");
+            String name = command.replaceAll(" ", "");
+            int currentIndex = getIndex(name);
+
+            message = "COMM Player " + name + " rolls " + dice1 + "," + dice2 + ". ";
+            message += getPlayer(currentIndex) + gameBoard.makeAMove(currentIndex, tirada);
+            storedMessage = message;
+            System.out.println(message);
+        }
+        return message;
+    }
+
+    String autoMove() {
+        String finalmove = "Wins!!";
+        String message = "";
+        while (!message.contains(finalmove)) { // para que entre en bucle
+            for (String player : player.playerList) { // para iterar a los jugadores
+                if (!message.contains(finalmove)) { // para hacer que compruebe la condicion (que el juego sigue)
+                    int dice1 = gameBoard.dice.rollDice();
+                    int dice2 = gameBoard.dice.rollDice();
+                    int tirada = dice1 + dice2;
+                    int currentIndex = getIndex(player);
+                    message = "TURN Player " + getPlayer(currentIndex) + " rolls " + dice1 + "," + dice2 + ". ";
+                    message += getPlayer(currentIndex) + gameBoard.makeAMove(currentIndex, tirada);
+                    System.out.println(message);
+                } else
+                    break; // para salir completamente del bucle cuando acaba el juego
             }
-        }         
-    } 
-}
-    class Player {
-    String newName = "";
-    String player;
-    int position_temp = 0;
+        }
+        return message;
+    }
 
-    String addPlayer(){
-        Scanner scanner = new Scanner(System.in);
-        newName = scanner.nextLine();
-        return newName;    
+    public String getPlayer(int index) {
+        return player.playerList.get(index);
     }
-    public String getPlayer(){
-        return player;
+
+    public int getIndex(String name) {
+        return player.playerList.indexOf(name);
     }
-    public void setPlayer(String player){
-        this.player = player;
+
+    public int getPosition(int index) {
+        return gameBoard.positions[index];
     }
-    public void setPosition(int position){
-        this.position_temp = position;
+
+    public void setPosition(int index, int position) {
+        gameBoard.positions[index] = position;
     }
-    public int getPosition(){
-        return position_temp;
-    }
+
 }
+
 class Dice {
-    int max = 6;
     int min = 1;
-    int d1 = 1;
-    int d2 = 1;
+    int max = 6;
 
-    int diceRoll(){
-        //Generate random int value from 1 to 6 
-        int random_int = (int)Math.floor(Math.random()*(max - min + 1) + min);
-        return random_int;
-    }
-    public void setDiceValue1(int d1){
-        this.d1 = d1;
-    }
-    public void setDiceValue2(int d2){
-        this.d2 = d2;
-    }
-    public int getTotalRoll(){
-        int diceAdding = d1 + d2;
-        return diceAdding;
-    }
-}
-class Roll {
-    public void pressEnterKeyToContinue(){ 
-        System.out.println("Press Enter key to continue...");
-        Scanner s = new Scanner(System.in);
-        s.nextLine();
+    int rollDice() {
+        int oneDice = (int) Math.floor(Math.random() * (max - min + 1) + min);
+        return oneDice;
     }
 }
 
+class Player {
+    List<String> playerList = new ArrayList<String>();
+
+    String addPlayer(String command) {
+        String name = command.replaceAll("[\\.\\,\\(\\)] ", "");
+        name = command.replaceAll("add player ", "");
+        String message = "";
+        if (playerList.contains(name)) {
+            message = "Player: " + name + " already exists. Please insert a new player.";
+        } else {
+            playerList.add(name);
+            message = "Players: ";
+            for (int index = 0; index < playerList.size(); index++) {
+                message += playerList.get(index);
+                if (index != playerList.size() - 1) {
+                    message += ", ";
+                }
+            }
+        }
+        System.out.println(message);
+        return message;
+    }
+}
+
+class GameBoard {
+    public int[] positions = new int[12];
+    int endPosition = 63;
+    int bridgePosition = 6;
+
+    Dice dice = new Dice();
+
+    String makeAMove(int index, int tirada) {
+        String message = "";
+        int oldPosition = positions[index];
+        int position = tirada + positions[index];
+        if (position <= endPosition) {
+            message = " moves from " + oldPosition;
+            if (position == bridgePosition) {
+                positions[index] = 12;
+                message += " to The Bridge. NOMBRE Jumps";
+            } else {
+                positions[index] = position;
+            }
+            message += " to " + positions[index];
+            if (position == 63) {
+                message += " NOMBRE Wins!!";
+            }
+        } else {
+            position = endPosition - (position - endPosition);
+            positions[index] = position;
+            message = " bounces! Returns to " + positions[index];
+        }
+        return message;
+    }
+}
