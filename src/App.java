@@ -19,8 +19,11 @@ class Game {
     void startGame() {
         player.addPlayer("add player Sara");
         player.addPlayer("add player Juan");
-        player.addPlayer("add player Pepito");
-        turn();
+        player.addPlayer("add player NOMBRE");
+        diceRoll("move NOMBRE");
+        diceRoll("move NOMBRE");
+        diceRoll("move NOMBRE");
+
     }
 
     String manualRoll(String command) {
@@ -36,10 +39,11 @@ class Game {
         return message;
     }
 
-    void diceRoll(String command) {
+    String diceRoll(String command) {
         int dice1 = dice.rollDice();
         int dice2 = dice.rollDice();
-        commandMove(dice1, dice2, command);
+        String message = commandMove(dice1, dice2, command);
+        return message;
     }
 
     String commandMove(int dice1, int dice2, String command) {
@@ -93,9 +97,9 @@ class Game {
     }
 
     public void setPosition(int index, int position) {
-        if (index >= gameBoard.positionsList.size()) {
+        do {
             gameBoard.positionsList.add(0);
-        }
+        } while (index >= gameBoard.positionsList.size());
         gameBoard.positionsList.set(index, position);
     }
 }
@@ -117,9 +121,7 @@ class Players {
         String name = command.replaceAll("[\\.\\,\\(\\)] ", "");
         name = command.replaceAll("add player ", "");
         String message = "";
-        if (name == "NOMBRE") {
-            message = "forbidden name NOMBRE";
-        }
+
         if (playerList.contains(name)) {
             message = "Player " + name + " already exists. Please insert a new player.";
         } else {
@@ -142,14 +144,12 @@ class GameBoard {
     final int BRIDGE_POSITION = 6;
     List<Integer> positionsList = new ArrayList<Integer>();
 
-    Dice dice = new Dice();
-
     String manageBoxes(int index, int tirada) {
-        if (index >= positionsList.size()) {
-            positionsList.add(0);
-        }
-
         String message = "";
+        do {
+            positionsList.add(0);
+        } while (index >= positionsList.size());
+
         int oldPosition = positionsList.get(index);
         int position = tirada + oldPosition;
 
