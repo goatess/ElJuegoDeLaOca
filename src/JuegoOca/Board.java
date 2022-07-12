@@ -1,38 +1,40 @@
 package JuegoOca;
 
 public class Board {
-    final int END_POSITION = 63;
-    final int BRIDGE_POSITION = 6;
-    boolean ended = false;
-    String message = "";
+    final int END_BOX = 63;
+    final int BRIDGE_BOX = 6;
+    final String END_MESSAGE = ". NAME Wins!!";
+    final String BOUNCE_MESSAGE = " to " + END_BOX + ". NAME bounces! NAME Returns";
+    final String BRIDGE_MESSAGE = " to The Bridge! NAME jumps";
+    final String TO = " to ";
+    private boolean ended = false;
+    private String outputMessage = "";
 
-    Board(){
+    Board() {
     }
 
     int determineMoveResult(int player, int position) {
-        if (position == BRIDGE_POSITION) {
+        if (position == BRIDGE_BOX) {
             position = 12;
-            message = " to The Bridge! NAME jumps";
+            outputMessage = BRIDGE_MESSAGE;
+        } else if (position > END_BOX) {
+            position = END_BOX - (position - END_BOX);
+            outputMessage = BOUNCE_MESSAGE;
         } 
-            if (position > END_POSITION) {
-                position = END_POSITION - (position - END_POSITION);
-                message += " to " + END_POSITION + ". NAME bounces! NAME Returns to " + position;
-            } else {
-                message += " to " + position;
-            }
-            if (position == END_POSITION) {
-                message += ". NAME Wins!!";
-                ended = true;
-            }
+        outputMessage += TO + position;
+        if (position == END_BOX) {
+            outputMessage += END_MESSAGE;
+            ended = true;
+        }
         return position;
     }
 
     public String getMessage() {
-        return message;
+        return outputMessage;
     }
 
     public void setMessage(String message) {
-        this.message = message;
+        this.outputMessage = message;
     }
 
     public boolean isEnded() {
