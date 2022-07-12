@@ -7,22 +7,22 @@ public class Board {
     boolean ended = false;
     String message = "";
 
+
     int makeAMove(int player, int position) {
         if (position == BRIDGE_POSITION) {
             position = 12;
-            message = " to The Bridge! NAME jumps to 12";
+            message = " to The Bridge! NAME jumps";
         } 
             if (position > END_POSITION) {
                 position = END_POSITION - (position - END_POSITION);
-                message += " to " + END_POSITION + ". NAME bounces! NAME Returns to POSITION";
+                message += " to " + END_POSITION + ". NAME bounces! NAME Returns to " + position;
             } else {
-                message += " to POSITION";
+                message += " to " + position;
             }
             if (position == END_POSITION) {
                 message += ". NAME Wins!!";
                 ended = true;
             }
-        
         return position;
     }
 
@@ -36,4 +36,5 @@ public class Board {
     public boolean isEnded() {
         return ended;
     }
+
 }

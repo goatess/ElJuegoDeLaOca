@@ -330,4 +330,54 @@ public class GameTest {
         // assert
         assertEquals(ENDED, actuallyEnded);
     }
+@Test
+        public void automated_PC_vs_PC_game_ends(){
+         // arrange
+        final boolean ENDED = true;
+        boolean actuallyEnded = false;
+        Game game = new Game();
+
+        // act
+        // act
+        game.setNumberOfPlayers(5);
+        game.startAutomatedGame();
+        actuallyEnded = game.isEnded();
+
+        // assert
+        assertEquals(ENDED, actuallyEnded);
+    }
+
+    @Test
+    public void automated_PC_vs_PC_game_end_message() {
+ // arrange
+        final String MESSAGE = " to 63. NAME Wins!!";
+        String actualMessage = "";
+        Game game = new Game();
+
+        // act
+        game.setNumberOfPlayers(1);
+        game.startAutomatedGame();
+        actualMessage = game.board.getMessage();
+
+        // assert
+        assertEquals(MESSAGE, actualMessage);
+
+    }
+    @Test
+        public void automated_PC_vs_PC_game_with_10_player_and_4_dice_ends(){
+         // arrange
+        final boolean ENDED = true;
+        boolean actuallyEnded = false;
+        Game game = new Game();
+
+        // act
+        // act
+        game.setNumberOfPlayers(10);
+        game.setNumberOfDices(4);
+        game.startAutomatedGame();
+        actuallyEnded = game.isEnded();
+
+        // assert
+        assertEquals(ENDED, actuallyEnded);
+    }
 }
