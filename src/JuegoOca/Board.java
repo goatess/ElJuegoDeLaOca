@@ -10,14 +10,13 @@ public class Board {
     int makeAMove(int player, int position) {
         if (position == BRIDGE_POSITION) {
             position = 12;
-            message = " to The Bridge! NAME jumps";
+            message = " to The Bridge! NAME jumps to 12";
         } 
-            message += " to ";
             if (position > END_POSITION) {
                 position = END_POSITION - (position - END_POSITION);
-                message += END_POSITION + ". NAME bounces! NAME Returns to POSITION";
+                message += " to " + END_POSITION + ". NAME bounces! NAME Returns to POSITION";
             } else {
-                message += "POSITION";
+                message += " to POSITION";
             }
             if (position == END_POSITION) {
                 message += ". NAME Wins!!";
@@ -29,6 +28,9 @@ public class Board {
 
     public String getMessage() {
         return message;
+    }
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     public boolean isEnded() {

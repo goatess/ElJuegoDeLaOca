@@ -111,19 +111,25 @@ public class Game {
         name = extractMoveName(command);
         determineDiceType(command);
         player = getPlayer(name);
-        moveMessage(player, dices[0], dices[1]);
+        moveMessage(player);
         playerTurn(player);
         return dices;
     }
 
     void playerTurn(int player) {
-        int position = getPlayerPosition(player);
-        position += dicesValue;
-        movePlayer(player, position);
+        moveMessage(player);
+        int possiblePosition = countBoxes(player);
+        movePlayer(player, possiblePosition);
     }
 
-    void movePlayer(int player, int position) {
-        position = board.makeAMove(player, position);
+    private int countBoxes(int player) {
+        int possiblePosition = getPlayerPosition(player);
+        possiblePosition += dicesValue;
+        return possiblePosition;
+    }
+
+    void movePlayer(int player, int possiblePosition) {
+        int position = board.makeAMove(player, possiblePosition);
         setPlayerPosition(player, position);
         boxMessage(player);
         ended = (position == 63);
@@ -179,10 +185,11 @@ public class Game {
 
     void addPlayersAuto() {
         String[] names = { "Sara", "Juan", "Pepe" };
-        for (int player = 0; player < numberOfPlayers; player++) {
+        for (int player = 0; player < 3; player++) {
             players.add(new Player());
             players.get(player).setName(names[player]);
         }
+        System.out.println(displayPlayerList());
     }
 
     void gameLoop() {
@@ -197,12 +204,17 @@ public class Game {
             if (!ended) {
                 rollDices();
                 playerTurn(player);
-            } else {break;}
+            } else {
+                break;
+            }
         }
     }
 
-    String moveMessage(int player, int dice1, int dice2) {
-        moveMessage = "Player NAME rolls " + dice1 + "," + dice2 + ". ";
+// MESSAGES 
+
+    String moveMessage(int player) {
+        moveMessage = "";
+        moveMessage = "Player NAME rolls " + dices[0] + "," + dices[1] + ". ";
         moveMessage += "NAME moves from ";
         if (getPlayerPosition(player) == 0) {
             moveMessage += "Start";
@@ -211,19 +223,22 @@ public class Game {
         }
         moveMessage = moveMessage.replaceAll("NAME", getPlayerName(player));
         
+        board.setMessage("");
         return moveMessage;
     }
 
     String boxMessage(int player) {
-        String message = moveMessage + board.getMessage();
+        String message = "";
         String name = getPlayerName(player);
         String position = String.valueOf(getPlayerPosition(player));
+        message = moveMessage + board.getMessage();
         message = message.replaceAll("NAME", name);
         message = message.replaceAll("POSITION", position);
         System.out.println(message);
         return message;
     }
 
+    // GETTERS & SETTERS
     public int getPlayer(String name) {
         int player = 0;
         for (player = 0; player < players.size(); player++) {
