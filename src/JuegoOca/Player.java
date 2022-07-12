@@ -1,13 +1,11 @@
 package JuegoOca;
 
 public class Player {
-
-    Player(){
-
-    }
-    
     String name = "";
     int position = 0;
+    
+    Player(){
+    }   
 
     public void setName(String name) {
         this.name = name;

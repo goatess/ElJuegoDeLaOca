@@ -1,5 +1,4 @@
 package JuegoOca;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -12,18 +11,17 @@ public class Game {
     boolean auto = false;
     boolean nameFound = false;
     String moveMessage = "";
-
-    int[] dices = new int[numberOfDices];
-    List<Player> players = new ArrayList<>();
     Dice dice = new Dice();
     Board board = new Board();
     Scanner scanner = new Scanner(System.in);
+    int[] dices = new int[numberOfDices];
+    List<Player> players = new ArrayList<>();
 
     public static void main(String[] args) throws Exception {
         Game game = new Game();
-        game.settings(4, 2, true);
+        game.changeSettings(4, 2, true);
         game.start();
-        game.settings(99, 2, false);
+        game.changeSettings(99, 2, false);
         game.start();
     }
 
@@ -31,14 +29,14 @@ public class Game {
     }
 
     void start() {
-        initialSettings();
+        initialSetup();
         if (auto) {
             startAutomatedGame();
         } else
             startManualGame();
     }
 
-    private void initialSettings() {
+    private void initialSetup() {
         players.clear();
         ended = false;
         nameFound = false;
@@ -46,24 +44,30 @@ public class Game {
         moveMessage = "";
     }
 
+    public void changeSettings(int numberOfPlayers, int numberOfDices, boolean auto) {
+        this.numberOfPlayers = numberOfPlayers;
+        this.numberOfDices = numberOfDices;
+        this.auto = auto;
+    }
+
     void startManualGame() {
         do {
-            determineCommandType();
+            insertCommand();
         } while (!ended);
-        initialSettings();
+        initialSetup();
         startManualGame();
     }
 
-    void determineCommandType() {
+    void insertCommand() {
         String command = scanner.nextLine();
-            if (command.contains("add player")) {
-                managePlayerAddCommand(command);
-            } else if (players.size() > 0 ){
-                manageMoveCommand(command);
-            }    
+        if (command.contains("add player")) {
+            useAddPlayerCommand(command);
+        } else if (players.size() > 0) {
+            useRollDiceCommand(command);
+        }
     }
 
-    String managePlayerAddCommand(String command) {
+    String useAddPlayerCommand(String command) {
         String name = extractName(command);
         String message = "";
         boolean nameFound = searchName(name);
@@ -71,19 +75,11 @@ public class Game {
             addPlayer(name);
             message = displayPlayerList();
         } else {
-            message = "Player " + name + " already exists. Please insert a new player.";
+            message = alreadyExistingNameMessage(name);
         }
 
         System.out.println(message);
         return message;
-    }
-
-    String extractName(String command) {
-        String name = "";
-        command = command.replaceAll("[\\.\\,\\(\\)] ", "");
-        command = command.replaceAll("add player ", "");
-        name = command;
-        return name;
     }
 
     void addPlayer(String name) {
@@ -106,32 +102,20 @@ public class Game {
         return nameFound;
     }
 
-    String displayPlayerList() {
-        String playerList = "Players: ";
-        for (int player = 0; player < players.size(); player++) {
-            playerList += getPlayerName(player);
-            if (player != players.size() - 1) {
-                playerList += ", ";
-            }
-        }
-        return playerList;
-    }
-
-    int[] manageMoveCommand(String command) {
+    int[] useRollDiceCommand(String command) {
         String name = "";
         int player = 0;
-        name = extractMoveName(command);
         determineDiceType(command);
+        name = extractName(command);
         player = getPlayer(name);
-        moveMessage(player);
-        playerTurn(player);
+        movePlayer(player);
         return dices;
     }
 
-    void playerTurn(int player) {
+    void movePlayer(int player) {
         moveMessage(player);
         int possiblePosition = countBoxes(player);
-        movePlayer(player, possiblePosition);
+        makeAMove(player, possiblePosition);
     }
 
     private int countBoxes(int player) {
@@ -140,37 +124,20 @@ public class Game {
         return possiblePosition;
     }
 
-    void movePlayer(int player, int possiblePosition) {
-        int position = board.makeAMove(player, possiblePosition);
+    void makeAMove(int player, int possiblePosition) {
+        int position = board.determineMoveResult(player, possiblePosition);
         setPlayerPosition(player, position);
         boxMessage(player);
         ended = (position == 63);
-    }
-
-    String extractMoveName(String command) {
-        String name = "";
-
-        command = command.replaceAll("[\\.\\,\\(\\)0-9]", "");
-        command = command.replaceFirst("move ", "");
-        command = command.replaceAll(" ", "");
-        name = command;
-        return name;
     }
 
     void determineDiceType(String command) {
         String onlyNumbers = command;
         onlyNumbers = onlyNumbers.replaceAll("[^0-9]", "");
         if (onlyNumbers.length() > 0) {
-            extractDiceRoll(onlyNumbers);
+            extractDices(onlyNumbers);
         } else
             rollDices();
-    }
-
-    void extractDiceRoll(String onlyNumbers) {
-        for (int i = 0; i < 2; i++) {
-            dices[i] = Integer.parseInt(onlyNumbers.substring(i, i + 1));
-        }
-        addDicesValues(dices);
     }
 
     void rollDices() {
@@ -188,14 +155,31 @@ public class Game {
         return dicesValue;
     }
 
-    // FOR PC vs PC GAME
+    void extractDices(String command) {
+        String onlyNumbers = command;
+        for (int i = 0; i < 2; i++) {
+            dices[i] = Integer.parseInt(onlyNumbers.substring(i, i + 1));
+        }
+        addDicesValues(dices);
+    }
+
+    String extractName(String command) {
+        String name = command;
+        name = name.replaceAll("[\\.\\,\\(\\)0-9]", "");
+        name = name.replaceAll("add player ", "");
+        name = name.replaceFirst("move ", "");
+        name = name.replaceAll(" ", "");
+        return name;
+    }
+
+    // AUTOMATED PC vs PC GAME
 
     void startAutomatedGame() {
-        addPlayersAuto();
+        addPlayersAutomated();
         gameLoop();
     }
 
-    void addPlayersAuto() {
+    void addPlayersAutomated() {
         String[] names = { "if", "you", "can", "read", "this", "players", "are", "sorted", "ascending", "when",
                 "turned" };
         for (int index = 0; index < numberOfPlayers; index++) {
@@ -207,16 +191,16 @@ public class Game {
 
     void gameLoop() {
         do {
-            turnPC();
+            turn();
         } while (!ended);
 
     }
 
-    void turnPC() {
+    void turn() {
         for (int player = 0; player < players.size(); player++) {
             if (!ended) {
                 rollDices();
-                playerTurn(player);
+                movePlayer(player);
             } else {
                 break;
             }
@@ -224,6 +208,21 @@ public class Game {
     }
 
     // MESSAGES
+
+    String displayPlayerList() {
+        String playerList = "Players: ";
+        for (int player = 0; player < players.size(); player++) {
+            playerList += getPlayerName(player);
+            if (player != players.size() - 1) {
+                playerList += ", ";
+            }
+        }
+        return playerList;
+    }
+
+    private String alreadyExistingNameMessage(String name) {
+        return "Player " + name + " already exists. Please insert a new player.";
+    }
 
     String moveMessage(int player) {
         moveMessage = "";
@@ -252,6 +251,7 @@ public class Game {
     }
 
     // GETTERS & SETTERS
+    /*
     public void setNumberOfPlayers(int numberOfPlayers) {
         this.numberOfPlayers = numberOfPlayers;
     }
@@ -259,7 +259,8 @@ public class Game {
     public void setNumberOfDices(int numberOfDices) {
         this.numberOfDices = numberOfDices;
     }
-
+ 
+ */
     public int getPlayer(String name) {
         int player = 0;
         for (player = 0; player < players.size(); player++) {
@@ -287,21 +288,7 @@ public class Game {
         return dicesValue;
     }
 
-    public int getDice0() {
-        return dices[0];
-    }
-
-    public int getDice1() {
-        return dices[1];
-    }
-
     public boolean isEnded() {
         return ended;
-    }
-
-    public void settings(int numberOfPlayers, int numberOfDices, boolean auto) {
-        this.numberOfPlayers = numberOfPlayers;
-        this.numberOfDices = numberOfDices;
-        this.auto = auto;
     }
 }

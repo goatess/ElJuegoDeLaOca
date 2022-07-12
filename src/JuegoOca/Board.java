@@ -3,12 +3,13 @@ package JuegoOca;
 public class Board {
     final int END_POSITION = 63;
     final int BRIDGE_POSITION = 6;
-
     boolean ended = false;
     String message = "";
 
+    Board(){
+    }
 
-    int makeAMove(int player, int position) {
+    int determineMoveResult(int player, int position) {
         if (position == BRIDGE_POSITION) {
             position = 12;
             message = " to The Bridge! NAME jumps";
@@ -29,6 +30,7 @@ public class Board {
     public String getMessage() {
         return message;
     }
+
     public void setMessage(String message) {
         this.message = message;
     }

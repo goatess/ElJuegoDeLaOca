@@ -1,7 +1,5 @@
 package JuegoOca;
-
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 public class GameTest {
@@ -42,7 +40,7 @@ public class GameTest {
         Game game = new Game();
 
         // act
-        actualList = game.managePlayerAddCommand("add player Sara");
+        actualList = game.useAddPlayerCommand("add player Sara");
 
         // assert
         assertEquals(LIST, actualList);
@@ -56,10 +54,10 @@ public class GameTest {
         Game game = new Game();
 
         // act
-        game.managePlayerAddCommand("add player Sara");
-        game.managePlayerAddCommand("add player Juan");
+        game.useAddPlayerCommand("add player Sara");
+        game.useAddPlayerCommand("add player Juan");
 
-        actualMessage = game.managePlayerAddCommand("add player Pepe");
+        actualMessage = game.useAddPlayerCommand("add player Pepe");
 
         // assert
         assertEquals(MESSAGE, actualMessage);
@@ -88,8 +86,8 @@ public class GameTest {
         Game game = new Game();
 
         // act
-        game.managePlayerAddCommand("add player Sara");
-        actualMessage = game.managePlayerAddCommand("add player Sara");
+        game.useAddPlayerCommand("add player Sara");
+        actualMessage = game.useAddPlayerCommand("add player Sara");
 
         // assert
         assertEquals(MESSAGE, actualMessage);
@@ -104,7 +102,7 @@ public class GameTest {
 
         // act
         game.addPlayer("Sara");
-        actualName = game.extractMoveName("move Sara 4,2");
+        actualName = game.extractName("move Sara 4,2");
 
         // assert
         assertEquals(NAME, actualName);
@@ -134,7 +132,7 @@ public class GameTest {
 
         // act
         game.addPlayer("Sara");
-        game.extractDiceRoll("42");
+        game.extractDices("42");
         actualDicesValue = game.getDicesValue();
 
         // assert
@@ -217,7 +215,7 @@ public class GameTest {
 
         // act
         game.addPlayer("Sara");
-        game.movePlayer(0, 5);
+        game.makeAMove(0, 5);
         actualPosition = game.getPlayerPosition(0);
 
         // assert
@@ -234,7 +232,7 @@ public class GameTest {
 
         // act
         game.addPlayer("Sara");
-        game.manageMoveCommand("move Sara 3,2");
+        game.useRollDiceCommand("move Sara 3,2");
         actualDicesValue = game.getDicesValue();
         actualPosition = game.getPlayerPosition(0);
 
@@ -255,7 +253,7 @@ public class GameTest {
         // act
         game.addPlayer("Sara");
         game.setPlayerPosition(0, 62);
-        game.manageMoveCommand("move Sara 4,2");
+        game.useRollDiceCommand("move Sara 4,2");
         actualDicesValue = game.getDicesValue();
         actualPosition = game.getPlayerPosition(0);
 
@@ -274,7 +272,7 @@ public class GameTest {
         // act
         game.addPlayer("Sara");
         game.setPlayerPosition(0, 62);
-        game.manageMoveCommand("move Sara 4,2");
+        game.useRollDiceCommand("move Sara 4,2");
         actualMessage = game.boxMessage(0);
 
         // assert
@@ -291,7 +289,7 @@ public class GameTest {
         // act
         game.addPlayer("Sara");
         game.setPlayerPosition(0, 60);
-        game.manageMoveCommand("move Sara 1,2");
+        game.useRollDiceCommand("move Sara 1,2");
         actualMessage = game.boxMessage(0);
 
         // assert
@@ -307,7 +305,7 @@ public class GameTest {
 
         // act
         game.addPlayer("Sara");
-        game.manageMoveCommand("move Sara 4,2");
+        game.useRollDiceCommand("move Sara 4,2");
         actualMessage = game.boxMessage(0);
 
         // assert
@@ -316,7 +314,7 @@ public class GameTest {
 
     @Test
     public void game_endGame() {
-         // arrange
+        // arrange
         final boolean ENDED = true;
         boolean actuallyEnded = false;
         Game game = new Game();
@@ -324,22 +322,22 @@ public class GameTest {
         // act
         game.addPlayer("Sara");
         game.setPlayerPosition(0, 60);
-        game.manageMoveCommand("move Sara 1,2");
+        game.useRollDiceCommand("move Sara 1,2");
         actuallyEnded = game.isEnded();
 
         // assert
         assertEquals(ENDED, actuallyEnded);
     }
-@Test
-        public void automated_PC_vs_PC_game_ends(){
-         // arrange
+
+    @Test
+    public void automated_PC_vs_PC_game_ends() {
+        // arrange
         final boolean ENDED = true;
         boolean actuallyEnded = false;
         Game game = new Game();
 
         // act
-        // act
-        game.setNumberOfPlayers(5);
+        game.changeSettings(2,2,true);
         game.startAutomatedGame();
         actuallyEnded = game.isEnded();
 
@@ -349,13 +347,13 @@ public class GameTest {
 
     @Test
     public void automated_PC_vs_PC_game_end_message() {
- // arrange
+        // arrange
         final String MESSAGE = " to 63. NAME Wins!!";
         String actualMessage = "";
         Game game = new Game();
 
         // act
-        game.setNumberOfPlayers(1);
+        game.changeSettings(1,2,true);
         game.startAutomatedGame();
         actualMessage = game.board.getMessage();
 
@@ -363,17 +361,17 @@ public class GameTest {
         assertEquals(MESSAGE, actualMessage);
 
     }
+
     @Test
-        public void automated_PC_vs_PC_game_with_10_player_and_4_dice_ends(){
-         // arrange
+    public void automated_PC_vs_PC_game_with_10_player_and_4_dice_ends() {
+        // arrange
         final boolean ENDED = true;
         boolean actuallyEnded = false;
         Game game = new Game();
 
         // act
         // act
-        game.setNumberOfPlayers(10);
-        game.setNumberOfDices(4);
+        game.changeSettings(10,4,true);
         game.startAutomatedGame();
         actuallyEnded = game.isEnded();
 
