@@ -5,56 +5,68 @@ import java.util.List;
 import java.util.Scanner;
 
 public class Game {
-    int numberOfPlayers = 5;
+    public int numberOfPlayers = 5;
     int numberOfDices = 2;
     int dicesValue = 0;
     boolean ended = false;
     boolean auto = false;
     boolean nameFound = false;
     String moveMessage = "";
-    
+
     int[] dices = new int[numberOfDices];
     List<Player> players = new ArrayList<>();
     Dice dice = new Dice();
     Board board = new Board();
     Scanner scanner = new Scanner(System.in);
 
-    void main() {
-        
+    public static void main(String[] args) throws Exception {
+        Game game = new Game();
+        game.settings(4, 2, true);
+        game.start();
+        game.settings(99, 2, false);
+        game.start();
     }
-    
+
     Game() {
-        automaticGame();
     }
 
-    Game(boolean auto) {
+    void start() {
+        initialSettings();
         if (auto) {
-            automaticGame();
+            startAutomatedGame();
         } else
-            ManualGame();
+            startManualGame();
     }
 
-    void ManualGame() {
+    private void initialSettings() {
+        players.clear();
+        ended = false;
+        nameFound = false;
+        dicesValue = 0;
+        moveMessage = "";
+    }
+
+    void startManualGame() {
         do {
             determineCommandType();
         } while (!ended);
-
+        initialSettings();
+        startManualGame();
     }
 
     void determineCommandType() {
         String command = scanner.nextLine();
-        if (command.contains("add player")) {
-            managePlayerAddCommand(command);
-        } else {
-            manageMoveCommand(command);
-        }
+            if (command.contains("add player")) {
+                managePlayerAddCommand(command);
+            } else if (players.size() > 0 ){
+                manageMoveCommand(command);
+            }    
     }
 
     String managePlayerAddCommand(String command) {
         String name = extractName(command);
         String message = "";
         boolean nameFound = searchName(name);
-
         if (!nameFound) {
             addPlayer(name);
             message = displayPlayerList();
@@ -176,18 +188,19 @@ public class Game {
         return dicesValue;
     }
 
-    // FOR PC vs PC  GAME 
+    // FOR PC vs PC GAME
 
-    void automaticGame() {
+    void startAutomatedGame() {
         addPlayersAuto();
         gameLoop();
     }
 
     void addPlayersAuto() {
-        String[] names = { "Sara", "Juan", "Pepe" };
-        for (int player = 0; player < 3; player++) {
+        String[] names = { "if", "you", "can", "read", "this", "players", "are", "sorted", "ascending", "when",
+                "turned" };
+        for (int index = 0; index < numberOfPlayers; index++) {
             players.add(new Player());
-            players.get(player).setName(names[player]);
+            players.get(index).setName(names[index]);
         }
         System.out.println(displayPlayerList());
     }
@@ -196,7 +209,7 @@ public class Game {
         do {
             turnPC();
         } while (!ended);
-        
+
     }
 
     void turnPC() {
@@ -210,7 +223,7 @@ public class Game {
         }
     }
 
-// MESSAGES 
+    // MESSAGES
 
     String moveMessage(int player) {
         moveMessage = "";
@@ -222,7 +235,7 @@ public class Game {
             moveMessage += getPlayerPosition(player);
         }
         moveMessage = moveMessage.replaceAll("NAME", getPlayerName(player));
-        
+
         board.setMessage("");
         return moveMessage;
     }
@@ -239,6 +252,14 @@ public class Game {
     }
 
     // GETTERS & SETTERS
+    public void setNumberOfPlayers(int numberOfPlayers) {
+        this.numberOfPlayers = numberOfPlayers;
+    }
+
+    public void setNumberOfDices(int numberOfDices) {
+        this.numberOfDices = numberOfDices;
+    }
+
     public int getPlayer(String name) {
         int player = 0;
         for (player = 0; player < players.size(); player++) {
@@ -273,7 +294,14 @@ public class Game {
     public int getDice1() {
         return dices[1];
     }
-    public boolean isEnded(){
+
+    public boolean isEnded() {
         return ended;
+    }
+
+    public void settings(int numberOfPlayers, int numberOfDices, boolean auto) {
+        this.numberOfPlayers = numberOfPlayers;
+        this.numberOfDices = numberOfDices;
+        this.auto = auto;
     }
 }
