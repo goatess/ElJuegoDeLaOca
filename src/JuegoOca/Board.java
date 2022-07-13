@@ -10,7 +10,9 @@ public class Board {
     private boolean ended = false;
     private String outputMessage = "";
 
-    Board() {
+    public Board() {
+        this.ended = false;
+        this.outputMessage = "";
     }
 
     int determineMoveResult(int player, int position) {
@@ -29,7 +31,7 @@ public class Board {
         return position;
     }
 
-    public String getMessage() {
+    public String getOutputMessage() {
         return outputMessage;
     }
 
@@ -41,4 +43,7 @@ public class Board {
         return ended;
     }
 
+    public void setEnded(boolean ended) {
+        this.ended = ended;
+    }
 }

@@ -3,9 +3,11 @@ package JuegoOca;
 public class Player {
     String name = "";
     int position = 0;
-    
-    Player(){
-    }   
+
+    public Player() {
+        this.name = "";
+        this.position = 0;
+    }
 
     public void setName(String name) {
         this.name = name;
