@@ -443,4 +443,21 @@ public class GameTest {
         assertEquals(1, game.players.size());
         assertEquals("Player", game.getPlayerName(0));
     }
+
+        @Test
+    public void manage_bad_syntax_in_commands() {
+        // arrange
+        final String MESSAGE = "Bad syntax";
+        String actualMessage = "";
+        Game game = new Game();
+
+        // act
+        game.executeCommand("add Player");
+        game.executeCommand("move 1,1");
+        actualMessage = game.getMessage();
+
+        // assert
+        assertEquals(MESSAGE, actualMessage);
+        assertEquals(0, game.players.size());
+    }
 }

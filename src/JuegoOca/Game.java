@@ -92,24 +92,28 @@ public class Game {
     }
 
     public String[] executeCommand(String command) {
-        String[] splitted = new String[4];
         String lowerCase = "";
         String name = "";
 
         command = command.replaceAll("[\\.\\\\(\\)]|^ +", "");
         command = command.replaceAll(",|( )+", " ");
         lowerCase = command.toLowerCase();
-        splitted = command.split("( )+");
-        
+        String[] splitted = command.split("( )+");
+
         if (lowerCase.startsWith("add player")) {
-            name = splitted[2];
-            createPlayer(name);
+            if (splitted.length == 3) {
+                name = splitted[2];
+                createPlayer(name);
+            } else
+                System.err.println(message = "Bad syntax");
         } else if (lowerCase.startsWith("move")) {
             name = splitted[1];
-            useMoveCommand(splitted, name);
+            if (searchName(name)) {
+            useMoveCommand(splitted, name); 
+            } else System.err.println(message = "Bad syntax");
         } else
-           insertCommand();
-    
+            insertCommand();
+
         return splitted;
     }
 
@@ -129,7 +133,7 @@ public class Game {
         }
         return message;
     }
-    
+
     private void createPlayersAutomated() {
         String name;
         for (int player = 0; player < numberOfPlayers; player++) {
@@ -155,7 +159,7 @@ public class Game {
     }
 
     private void determineRoll(String[] splittedCommand) {
-        if (splittedCommand.length > 2) {
+        if (splittedCommand.length == 4) {
             extractCommandValues(splittedCommand);
         } else
             rollRandomValues();
@@ -165,7 +169,7 @@ public class Game {
         int tempValue = 0;
 
         for (int i = 0; i < 2; i++) {
-            tempValue = Integer.parseInt(splittedCommand[i+2]);
+            tempValue = Integer.parseInt(splittedCommand[i + 2]);
 
             if ((tempValue <= dice.getSides()) && (tempValue >= 1)) {
                 dices[i] = tempValue;

@@ -7,6 +7,9 @@ public class Dice {
     Dice() {
         int value = randomRoll();
         this.value = value;
+    }
+        Dice(int value) {
+        this.value = value;
 
     }
 
