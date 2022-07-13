@@ -367,7 +367,7 @@ public class GameTest {
 
         // act
         game.executeCommand("add player Sara");
-        game.executeCommand("move sArA 10,53");
+        game.executeCommand("move sArA 10, 53");
         actualMessage = game.getMessage();
         // assert
         assertEquals(MESSAGE, actualMessage);
@@ -424,5 +424,23 @@ public class GameTest {
         assertEquals(MESSAGE, actualMessage);
         assertEquals(1, game.players.size());
         assertEquals("NAME", game.getPlayerName(0));
+    }
+
+        @Test
+    public void ignore_multiple_spaces_anywhere_in_command() {
+        // arrange
+        final String MESSAGE = "Player Player rolls 1,1. Player moves from Start to 2";
+        String actualMessage = "";
+        Game game = new Game();
+
+        // act
+        game.executeCommand("  add    Player    Player  ");
+        game.executeCommand("  move    Player   1 ,  1  ");
+        actualMessage = game.getMessage();
+
+        // assert
+        assertEquals(MESSAGE, actualMessage);
+        assertEquals(1, game.players.size());
+        assertEquals("Player", game.getPlayerName(0));
     }
 }

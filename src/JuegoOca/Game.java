@@ -96,10 +96,11 @@ public class Game {
         String lowerCase = "";
         String name = "";
 
-        command = command.replaceAll("[\\.\\\\(\\)]", "");
+        command = command.replaceAll("[\\.\\\\(\\)]|^ +", "");
+        command = command.replaceAll(",|( )+", " ");
         lowerCase = command.toLowerCase();
-        splitted = command.split(",\\|,|\\,|\\s+");
-
+        splitted = command.split("( )+");
+        
         if (lowerCase.startsWith("add player")) {
             name = splitted[2];
             createPlayer(name);
