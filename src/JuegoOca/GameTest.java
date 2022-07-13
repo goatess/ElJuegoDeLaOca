@@ -352,7 +352,7 @@ public class GameTest {
 
         // act
         game.executeCommand("add PLAYER Sara");
-        game.executeCommand("mOVe Sara 1, 4");
+        game.executeCommand("mOVe Sara 1,4");
         actualMessage = game.getMessage();
         // assert
         assertEquals(MESSAGE, actualMessage);

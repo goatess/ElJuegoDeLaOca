@@ -5,12 +5,9 @@ public class Dice {
     private int value = 1;
 
     Dice() {
-        sides = 6;
-        value = 1;
-    }
+        int value = randomRoll();
+        this.value = value;
 
-    public Dice(int sides) {
-        this.sides = sides;
     }
 
     public int randomRoll() {

@@ -98,16 +98,17 @@ public class Game {
 
         command = command.replaceAll("[\\.\\\\(\\)]", "");
         lowerCase = command.toLowerCase();
-        splitted = command.split("[ |,]");
+        splitted = command.split(",\\|,|\\,|\\s+");
 
         if (lowerCase.startsWith("add player")) {
             name = splitted[2];
-            addPlayer(name);
+            createPlayer(name);
         } else if (lowerCase.startsWith("move")) {
             name = splitted[1];
             useMoveCommand(splitted, name);
         } else
            insertCommand();
+    
         return splitted;
     }
 
@@ -117,28 +118,22 @@ public class Game {
         makeAMove(player);
     }
 
-    private String addPlayer(String name) {
+    private String createPlayer(String name) {
         boolean nameFound = searchName(name);
         if (!nameFound) {
-            createPlayer(name);
+            players.add(new Player(name));
             message = displayPlayerList();
         } else {
             message = alreadyExistingNameMessage(name);
         }
         return message;
     }
-
-    private void createPlayer(String name) {
-        int player = players.size();
-        players.add(player, new Player());
-        players.get(player).setName(name);
-    }
-
+    
     private void createPlayersAutomated() {
         String name;
         for (int player = 0; player < numberOfPlayers; player++) {
             name = String.valueOf("PC " + (player + 1));
-            createPlayer(name);
+            players.add(new Player(name));
         }
         displayPlayerList();
     }
@@ -170,8 +165,7 @@ public class Game {
 
         for (int i = 0; i < 2; i++) {
             tempValue = Integer.parseInt(splittedCommand[i+2]);
-            
-        
+
             if ((tempValue <= dice.getSides()) && (tempValue >= 1)) {
                 dices[i] = tempValue;
             } else
