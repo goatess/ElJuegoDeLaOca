@@ -460,4 +460,20 @@ public class GameTest {
         assertEquals(MESSAGE, actualMessage);
         assertEquals(0, game.players.size());
     }
+            @Test
+    public void manage_empty_command() {
+        // arrange
+        final String MESSAGE = "Bad syntax";
+        String actualMessage = "";
+        Game game = new Game();
+
+        // act
+        game.executeCommand("add Player");
+        game.executeCommand("");
+        actualMessage = game.getMessage();
+
+        // assert
+        assertEquals(MESSAGE, actualMessage);
+        assertEquals(0, game.players.size());
+    }
 }
