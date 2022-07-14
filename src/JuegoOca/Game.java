@@ -18,6 +18,7 @@ public class Game {
     Board board = new Board();
     Scanner scanner = new Scanner(System.in);
     Message messages = new Message();
+    Command command = new Command();
 
     public static void main(String[] args) throws Exception {
         Game game = new Game();
@@ -69,7 +70,7 @@ public class Game {
 
     private void startManualGame() {
         do {
-            insertCommand();
+            command.insertCommand();
         } while (!ended);
         startManualGame();
     }
@@ -79,56 +80,29 @@ public class Game {
             if (ended) {
                 break;
             } else {
-                rollRandomValues();
+                rollRandomDice();
                 makeAMove(player);
             }
         }
     }
 
-    private void insertCommand() {
-        String command = scanner.nextLine();
-        executeCommand(command);
-    }
-
-    public String[] executeCommand(String command) {
-        String lowerCase = "";
-        String name = "";
-        String addPrefix = "add player";
-        String movePrefix = "move";
-        command = command.replaceAll("[\\.\\\\(\\)]|^ +", "");
-        command = command.replaceAll(",|( )+", " ");
-        lowerCase = command.toLowerCase();
-        String[] splitted = command.split("( )+");
-
-        if (lowerCase.startsWith(addPrefix)) {
-            if (splitted.length == 3) {
-                name = splitted[2];
-                createPlayer(name);
-            } else{
-                messages.badSyntaxMessage();
-            }
-        } else if (lowerCase.startsWith(movePrefix)) {
-            name = splitted[1];
-            if (searchName(name)) {
-                useMoveCommand(splitted, name);
-            } else
-                messages.badSyntaxMessage();
-        } 
-            
-        return splitted;
-    }
-
-    private void useMoveCommand(String[] splitted, String name) {
-        int player = getPlayer(name);
-        determineRoll(splitted);
-        makeAMove(player);
+    void executeCommand(String newCommand) {
+        int action = command.extractCommand(newCommand);
+        if (action == 1) {
+            createPlayer(command.getName());
+        } else if (action == 2) {
+            movePlayer(command.getName());
+        } else if (action == 3) {
+            messages.badSyntaxMessage();
+        }
     }
 
     private void createPlayer(String name) {
-        boolean nameFound = searchName(name);
+        boolean nameFound = command.searchName(name);
         if (!nameFound) {
             players.add(new Player(name));
             messages.displayPlayerList(players);
+            command.retrievePlayers(players);
         } else {
             messages.alreadyExistingNameMessage(name);
         }
@@ -141,49 +115,35 @@ public class Game {
             players.add(new Player(name));
         }
         messages.displayPlayerList(players);
+        command.retrievePlayers(players);
     }
 
-    private boolean searchName(String nameSearched) {
-        String nameStored = "";
-        boolean found = false;
-        for (int player = 0; player < players.size(); player++) {
-            nameStored = getPlayerName(player);
-            if (nameStored.equalsIgnoreCase(nameSearched)) {
-                found = true;
-                break;
-            } else {
-                found = false;
-            }
+    private void movePlayer(String name) {
+        int player = getPlayer(name);
+        int rollType = command.determineMove();
+        if (rollType == 1) {
+            rollCommandDice();
+        } else {
+            rollRandomDice();
         }
-        return found;
+        makeAMove(player);
     }
 
-    private void determineRoll(String[] splittedCommand) {
-        if (splittedCommand.length == 4) {
-            extractCommandValues(splittedCommand);
-        } else
-            rollRandomValues();
-    }
-
-    private void extractCommandValues(String[] splittedCommand) {
-        int tempValue = 0;
-
-        for (int i = 0; i < 2; i++) {
-            tempValue = Integer.parseInt(splittedCommand[i + 2]);
-
-            if ((tempValue <= dice.getSides()) && (tempValue >= 1)) {
-                dices[i] = tempValue;
-            } else
-                dices[i] = 1;
-        }
+    private void rollCommandDice() {
+        dices = command.extractCommandDice(dice.getSides());
         addValues(dices);
     }
 
-    private void rollRandomValues() {
+    private void rollRandomDice() {
         for (numberOfDices = 0; numberOfDices < dices.length; numberOfDices++) {
             dices[numberOfDices] = dice.randomRoll();
         }
         addValues(dices);
+    }
+
+    private void makeAMove(int player) {
+        int possibleBox = countBoxes(player);
+        movePlayer(player, possibleBox);
     }
 
     private int addValues(int[] dices) {
@@ -192,11 +152,6 @@ public class Game {
             entireRoll += dices[diceNum];
         }
         return entireRoll;
-    }
-
-    private void makeAMove(int player) {
-        int possibleBox = countBoxes(player);
-        movePlayer(player, possibleBox);
     }
 
     private int countBoxes(int player) {
@@ -258,6 +213,7 @@ public class Game {
     public int getDice1() {
         return dices[1];
     }
+
     public List<Player> getPlayers() {
         return players;
     }
