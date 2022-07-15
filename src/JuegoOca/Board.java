@@ -7,43 +7,42 @@ public class Board {
     final String BOUNCE_MESSAGE = " to " + END_BOX + ". NAME bounces! NAME Returns";
     final String BRIDGE_MESSAGE = " to The Bridge! NAME jumps";
     final String TO = " to ";
-    private boolean ended = false;
-    private String outputMessage = "";
+    private int box;
+    private boolean ended;
+    private String outputMessage;
 
-    public Board() {
+    Board() {
         this.ended = false;
-        this.outputMessage = "";
-    }
+}
 
-    int determineMoveResult(int player, int position) {
-        if (position == BRIDGE_BOX) {
-            position = 12;
+    int applyRules(Player player) {
+        outputMessage = "";
+        int count = player.getCount();
+        if (count == BRIDGE_BOX) {
+            box = 12;
             outputMessage = BRIDGE_MESSAGE;
-        } else if (position > END_BOX) {
-            position = END_BOX - (position - END_BOX);
+        } else if (count > END_BOX) {
+            box = END_BOX - (count - END_BOX);
             outputMessage = BOUNCE_MESSAGE;
-        } 
-        outputMessage += TO + position;
-        if (position == END_BOX) {
+        } else {
+            box = count;
+        }
+        outputMessage += TO + box;
+        if (count == END_BOX) {
             outputMessage += END_MESSAGE;
             ended = true;
         }
-        return position;
+
+        return box;
+
     }
 
-    public String getOutputMessage() {
+    public String getMessage() {
         return outputMessage;
-    }
-
-    public void setMessage(String message) {
-        this.outputMessage = message;
     }
 
     public boolean isEnded() {
         return ended;
     }
 
-    public void setEnded(boolean ended) {
-        this.ended = ended;
-    }
 }

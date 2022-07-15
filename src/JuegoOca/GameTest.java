@@ -2,7 +2,6 @@ package JuegoOca;
 
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
-import java.io.ObjectInputStream.GetField;
 
 public class GameTest {
 
@@ -70,7 +69,7 @@ public class GameTest {
         // act
         game.executeCommand("add player Sara");
         game.executeCommand("move Sara 3,2");
-        actualPosition = game.getPlayerPosition(0);
+        actualPosition = game.getPlayerPosition("Sara");
         actualMessage = game.getMessage();
 
         // assert
@@ -81,8 +80,8 @@ public class GameTest {
     @Test
     public void store_position_of_a_player_and_add_it_to_dice_roll_next_move() {
         // arrange
-        final String MESSAGE = "Player Sara rolls 5,5. Sara moves from 40 to 50";
-        final int POSITION = 50;
+        final String MESSAGE = "Player Sara rolls 5,5. Sara moves from 20 to 30";
+        final int POSITION = 30;
         String actualMessage = "";
         int actualPosition = 0;
         Game game = new Game();
@@ -92,10 +91,9 @@ public class GameTest {
         game.executeCommand("move Sara 5,5");
         game.executeCommand("move Sara 5,5");
         game.executeCommand("move Sara 5,5");
-        game.executeCommand("move Sara 5,5");
-        game.executeCommand("move Sara 5,5");
+
         actualMessage = game.getMessage();
-        actualPosition = game.getPlayerPosition(0);
+        actualPosition = game.getPlayerPosition("Sara");
         // assert
         assertEquals(MESSAGE, actualMessage);
         assertEquals(POSITION, actualPosition);
@@ -126,8 +124,8 @@ public class GameTest {
         game.executeCommand("move Sara 5,5");
         game.executeCommand("move Juan 2,3");
         actualMessage = game.getMessage();
-        actualPlayer0Position = game.getPlayerPosition(0);
-        actualPlayer1Position = game.getPlayerPosition(1);
+        actualPlayer0Position = game.getPlayerPosition("Sara");
+        actualPlayer1Position = game.getPlayerPosition("Juan");
         // assert
         assertEquals(LAST_MESSAGE, actualMessage);
         assertEquals(PLAYER_0_POSITION, actualPlayer0Position);
@@ -139,26 +137,17 @@ public class GameTest {
         // arrange
         final boolean DICES_ROLL_IS_IN_RANGE = true;
         boolean actualDicesRollIsInRange = false;
-        boolean actualDiceIsInRange = false;
         int actualRoll = 0;
-        int dice0 = 0;
-        int dice1 = 0;
         Game game = new Game();
 
         // act
         game.executeCommand("add player Sara");
         game.executeCommand("move Sara");
-        dice0 = game.getDice0();
-        dice1 = game.getDice1();
-        actualRoll = dice0 + dice1;
+        actualRoll = game.getRoll(0);
         actualDicesRollIsInRange = ((actualRoll > 1) && (actualRoll < 13));
-        actualDiceIsInRange = ((dice1 > 0 && dice1 < 7) && (dice0 > 0 && dice0 < 7));
-
+       
         // assert
         assertEquals(DICES_ROLL_IS_IN_RANGE, actualDicesRollIsInRange);
-        assertEquals(DICES_ROLL_IS_IN_RANGE, actualDiceIsInRange);
-
-
     }
 
     @Test
@@ -170,7 +159,7 @@ public class GameTest {
 
         // act
         game.executeCommand("add player Sara");
-        actualIndex = game.getPlayer("Sara");
+        actualIndex = game.getPlayerID("Sara");
 
         // assert
         assertEquals(INDEX, actualIndex);
@@ -189,10 +178,10 @@ public class GameTest {
 
         // act
         game.executeCommand("add player Sara");
-        game.setPlayerPosition(0, 62);
+        game.setPlayerPosition("Sara", 62);
         game.executeCommand("move Sara 4,2");
         actualMessage = game.getMessage();
-        actualPosition = game.getPlayerPosition(0);
+        actualPosition = game.getPlayerPosition("Sara");
         actuallyEnded = game.isEnded();
 
         // assert
@@ -214,10 +203,10 @@ public class GameTest {
 
         // act
         game.executeCommand("add player Sara");
-        game.setPlayerPosition(0, 60);
+        game.setPlayerPosition("Sara", 60);
         game.executeCommand("move Sara 1,2");
         actualMessage = game.getMessage();
-        actualPosition = game.getPlayerPosition(0);
+        actualPosition = game.getPlayerPosition("Sara");
         actuallyEnded = game.isEnded();
 
         // assert
@@ -239,11 +228,11 @@ public class GameTest {
         game.executeCommand("add player Sara");
         game.executeCommand("move Sara 4,2");
         actualMessage = game.getMessage();
-        actualPosition = game.getPlayerPosition(0);
+        actualPosition = game.getPlayerPosition("Sara");
 
         // assert
-        assertEquals(MESSAGE, actualMessage);
         assertEquals(POSITION, actualPosition);
+        assertEquals(MESSAGE, actualMessage);
     }
 
     @Test
@@ -254,19 +243,20 @@ public class GameTest {
         boolean isFinalMessage = false;
         boolean actuallyEnded = false;
         Game game = new Game();
-
+        
         // act
-
-        game.selectGameToStart(2, 2, true, 6);
+        
+        game.selectGameToStart(2, true);
         isFinalMessage = game.getMessage().contains(" Wins!!");
         actuallyEnded = game.isEnded();
-
+        
         // assert
         assertEquals(FINAL_MESSAGE, isFinalMessage);
         assertEquals(ENDED, actuallyEnded);
-
+        
     }
 
+    
     @Test
     public void run_an_automated_PC_vs_PC_game_with_4_dice_of_10_sides() {
         // arrange
@@ -275,13 +265,14 @@ public class GameTest {
         Game game = new Game();
 
         // act
-        game.selectGameToStart(2, 4, true, 10);
+        game.selectGameToStart(2, true);
         actuallyEnded = game.isEnded();
 
         // assert
         assertEquals(ENDED, actuallyEnded);
     }
-
+ 
+ 
     @Test
     public void ignore_caps_when_adding_player() {
         // arrange
@@ -323,7 +314,7 @@ public class GameTest {
 
         // act
         game.executeCommand("add player Sara");
-        actualIndex = game.getPlayer("SARA");
+        actualIndex = game.getPlayerID("SARA");
 
         // assert
         assertEquals(INDEX, actualIndex);
@@ -447,7 +438,7 @@ public class GameTest {
         @Test
     public void manage_bad_syntax_in_commands() {
         // arrange
-        final String MESSAGE = "Bad syntax";
+        final String MESSAGE = "Bad syntax in command 'move'";
         String actualMessage = "";
         Game game = new Game();
 
@@ -463,7 +454,7 @@ public class GameTest {
             @Test
     public void manage_empty_command() {
         // arrange
-        final String MESSAGE = "Bad syntax";
+        final String MESSAGE = "Command not found";
         String actualMessage = "";
         Game game = new Game();
 
